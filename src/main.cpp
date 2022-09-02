@@ -1,6 +1,4 @@
-#include <spdlog/spdlog.h>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "context.h"
 
 void OnFramebufferSizeChange(GLFWwindow* window, int width, int height) {
     SPDLOG_INFO("framebuffer size changed: ({} x {})", width, height);
@@ -58,6 +56,13 @@ int main(int argc, const char** argv){
     auto glVersion = glGetString(GL_VERSION);
     SPDLOG_INFO("OpenGL context version: {}", glVersion);
 
+    auto context = Context::Create();
+    if (!context){
+        SPDLOG_ERROR("failed to create context");
+        glfwTerminate();
+        return -1;
+    }
+
 
     OnFramebufferSizeChange(window, WINDOW_WIDTH, WINDOW_HEIGHT); // set initial window size
     glfwSetFramebufferSizeCallback(window,OnFramebufferSizeChange);
@@ -73,11 +78,16 @@ int main(int argc, const char** argv){
     SPDLOG_INFO("Start main loop");
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-        glClearColor(0.0f, 0.1f, 0.2f, 0.0f); // set the clear color
-        glClear(GL_COLOR_BUFFER_BIT); // clear the screent with the color above.
+        
+        context->Render(); // clear the screent with the color above.
         glfwSwapBuffers(window);
     }
 
+    context.reset();//using reset func is more legible than nullptr.
+    /*
+    context=nullptr; is also possible 
+    because the memory will be deallocated once the pointer lose its ownership.
+    */
     glfwTerminate();
 
     return 0;
