@@ -10,11 +10,14 @@ set(WINDOW_HEIGHT 540)
 project(${PROJECT_NAME})
 add_executable(${PROJECT_NAME} 
     src/main.cpp
-    src/common.cpp src/common.h
+    src/common.cpp src/common.h #if the header file changes, it will be compiled automatically
     src/shader.cpp src/shader.h
     src/program.cpp src/program.h
     src/context.cpp src/context.h
     src/buffer.cpp src/buffer.h
+    src/vertex_layout.cpp src/vertex_layout.h
+    src/image.cpp src/image.h
+    src/texture.cpp src/texture.h
     )
 
 include(Dependency.cmake)
@@ -35,5 +38,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC # #define 과 같은 역할
 
 # Dependency들이 먼저 build 될 수 있게 관계 설정
 add_dependencies(${PROJECT_NAME} ${DEP_LIST})
+
 
 #소스코드에 추가하고 싶은 것은 여기에 저장
